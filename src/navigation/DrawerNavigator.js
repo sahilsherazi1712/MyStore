@@ -39,27 +39,28 @@ const DrawerNavigator = () => {
         //         <Image source={imgAbout} style={{width:16, height:16, tintColor: focused? Color.BLUE: "#888"}}/>
         //     ) }} />
         // </Drawer.Navigator>
-        <Drawer.Navigator 
-            drawerContent={props => <DrawerContent {... props}/> } 
+        <Drawer.Navigator
+            useLegacyImplementation={false}
+            drawerContent={props => <DrawerContent {...props} />}
             screenOptions={{
                 headerShown: false,
             }}>
-            <Drawer.Screen 
+            <Drawer.Screen
                 name='Menu'
                 component={Menu}
-                // options={{ headerTitle: (props) => <LogoTitle {...props} /> }}
-                />
+            // options={{ headerTitle: (props) => <LogoTitle {...props} /> }}
+            />
         </Drawer.Navigator>
     )
 }
 
-function LogoTitle(){
+function LogoTitle() {
     return (
         <Image
-          style={{ width: 50, height: 50 }}
-          source={imgLogout}
+            style={{ width: 50, height: 50 }}
+            source={imgLogout}
         />
-      );
+    );
 }
 
 const styles = StyleSheet.create({})

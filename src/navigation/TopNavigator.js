@@ -25,7 +25,7 @@ const TopNavigator = () => {
                 options={{
                     // tabBarShowLabel: false,
                     tabBarLabel: ({ focused }) => (
-                        <View style={{ backgroundColor: focused && theme.btnColor, alignItems: 'center', justifyContent: 'center', paddingVertical: 7, paddingHorizontal: 50, borderRadius: 20, }}>
+                        <View style={{ backgroundColor: focused && theme.btnColor, alignItems: 'center', justifyContent: 'center', paddingVertical: 10, marginBottom: -10, paddingHorizontal: 50, borderRadius: 20, }}>
                             <Text style={{ color: focused ? theme.textColor : theme.GREY, fontSize: 16, fontFamily: 'Poppins', fontWeight: 'bold' }}>Login</Text>
                         </View>
                     )
@@ -37,7 +37,7 @@ const TopNavigator = () => {
                 options={{
                     // tabBarShowLabel: false,
                     tabBarLabel: ({ focused }) => (
-                        <View style={{ backgroundColor: focused && theme.btnColor, alignItems: 'center', justifyContent: 'center', paddingVertical: 7, paddingHorizontal: 50, borderRadius: 20, }}>
+                        <View style={{ backgroundColor: focused && theme.btnColor, alignItems: 'center', justifyContent: 'center', paddingVertical: 10, marginBottom: -10, paddingHorizontal: 50, borderRadius: 20, }}>
                             <Text style={{ color: focused ? theme.textColor : theme.GREY, fontSize: 16, fontFamily: 'Poppins', fontWeight: 'bold' }}>SignUp</Text>
                         </View>
                     )

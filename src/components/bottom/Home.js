@@ -4,13 +4,12 @@ import actions from '../../redux/actions'
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '../../redux/actions/myAction';
 import { Color } from '../../styles/Color';
-import { ComfortAPI } from '../../services/ComfortAPI';
 import CustomHeader from '../common/CustomHeader';
 import CustomCarousel from '../common/CustomCarousel';
 import { imgStar } from '../../assets/images';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { Modal } from 'react-native-paper';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import ThemeContext from '../common/ThemeContext';
 
 const Home = ({ navigation }) => {
@@ -20,7 +19,7 @@ const Home = ({ navigation }) => {
   const [exitDialogVisible, setExitDialogVisible] = useState(false);
 
   const { theme } = useContext(ThemeContext)
-
+  
   const tabBarHeight = useBottomTabBarHeight()
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products.productsData);
@@ -44,7 +43,6 @@ const Home = ({ navigation }) => {
     if (products.length > 0) {
       setData(products)
     }
-
   }, [products])
 
 

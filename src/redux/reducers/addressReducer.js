@@ -1,6 +1,6 @@
 import types from "../types";
 
-const init_state = {
+let init_state = {
     addresses: [],
 };
 

@@ -14,7 +14,7 @@ const AuthenticationScreen = () => {
         <Image source={imgLogo} style={{ width: 84, height: 84, marginTop: 10, }} />
       </View> */}
 
-      <View style={{flex: 1, marginTop: 20, }}>
+      <View style={{flex: 1, marginTop: 0, }}>
         <TopNavigator/>
       </View>
     </View>

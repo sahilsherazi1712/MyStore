@@ -28,7 +28,7 @@ const CustomTextInput = ({
     const [cca2, setCca2] = useState('PK')
 
     return (
-        <View style={{ flex: 1, marginTop: 10, }}>
+        <View style={{ marginTop: 10, }}>
             <Text style={{ padding: 3, color: theme.btnColor, textAlign: 'left', fontFamily: 'Poppins' }}>{label}:</Text>
             <TouchableOpacity
                 onPress={() => {
@@ -72,11 +72,12 @@ const CustomTextInput = ({
                 </View>}
                 <View pointerEvents={touchable && 'none'} style={{ width: "88%", }}>
                     <TextInput
-                        style={{ paddingHorizontal: 10, width: "88%", textAlignVertical: 'top', color: theme.textColor1 }}
+                        style={{ paddingHorizontal: 10, width: endIcon? "88%": "100%", textAlignVertical: 'top', color: theme.textColor1 }}
                         onChangeText={onChangeText}
                         onFocus={onFocus}
                         onBlur={onBlur}
                         onSubmitEditing={onSubmitEditing}
+                        spellCheck={false}
                         placeholder={placeholder}
                         secureTextEntry={secureTextEntry}
                         keyboardType={keyboardType}

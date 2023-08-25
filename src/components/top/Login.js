@@ -2,14 +2,51 @@ import React, { useContext, useState } from 'react'
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import ThemeContext from '../common/ThemeContext'
 import CustomTextInput from '../common/CustomTextInput';
-import { imgEmail, imgFacebook, imgGoogle, imgHidePass, imgPassword, imgShowPass } from '../../assets/images';
+import { imgCall, imgEmail, imgFacebook, imgGoogle, imgHidePass, imgPassword, imgShowPass } from '../../assets/images';
 import CustomButton from '../common/CustomButton';
+import RiteLoader from '../../utils/helpers/RiteLoader';
+import auth from '@react-native-firebase/auth'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { EMAIL_PASS_LOGIN, IS_USER_LOGGED_IN } from '../../utils/Keys';
 
-const Login = () => {
+const Login = ({navigation}) => {
     const { theme } = useContext(ThemeContext);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(true);
+    const [loaderVisible, setLoaderVisible] = useState(false)
+    const [loaderMsg, setLoaderMsg] = useState('Loading ...')
+
+    const validateInputs = () => {
+        const trimedEmail = email.trim();
+        const trimedPassword = password.trim();
+        trimedEmail === "" ? console.log("Please Enter Your Email Address!")
+            : trimedPassword === "" ? console.log("Please Enter Your Password!")
+                : loginUser(trimedEmail, trimedPassword);
+    }
+
+    const loginUser = (email, password) => {
+        setLoaderMsg('Logging In ...')
+        setLoaderVisible(true)
+        try {
+            auth()
+                .signInWithEmailAndPassword(email, password)
+                .then(async (res) => {
+                    setLoaderVisible(false)
+                    await AsyncStorage.setItem(IS_USER_LOGGED_IN, 'true')
+                    console.log('LoginInRes: ',res);
+                    setEmail('')
+                    setPassword('')
+                    navigation.navigate('Account')
+                })
+                .catch((error) => {
+                    setLoaderVisible(false)
+                    console.log('LoginInError: ', error);
+                })
+        } catch (error) {
+            console.log('SavingLoginInError: ', error);
+        }
+    }
 
     return (
         <ScrollView style={{ flex: 1, backgroundColor: theme.primaryColor, margin: 10, borderRadius: 10, elevation: 5, paddingHorizontal: 20, }}>
@@ -45,7 +82,7 @@ const Login = () => {
                     title={'Login'}
                     style={{ marginTop: 40, }}
                     onPress={() => {
-
+                        validateInputs();
                     }}
                 />
             </View>
@@ -56,23 +93,28 @@ const Login = () => {
                     <Text style={{ marginLeft: 10, marginRight: 10, color: theme.textColor1 }}>OR</Text>
                     <View style={{ height: .5, width: '100%', backgroundColor: theme.GREY }}><Text>aa</Text></View>
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10}}>
                     <TouchableOpacity
                         onPress={() => {
 
                         }}
                     >
-                        <Image source={imgFacebook} style={{ width: 54, height: 54, }} />
+                        <Image source={imgFacebook} style={{ width: 44, height: 44, }} />
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => {
 
                         }}
                     >
-                        <Image source={imgGoogle} style={{ width: 54, height: 54, marginLeft: 40, }} />
+                        <Image source={imgGoogle} style={{ width: 44, height: 44, marginLeft: 30, }} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => {}}
+                    >
+                        <Image source={imgCall} style={{ width: 44, height: 44, marginLeft: 30, }} />
                     </TouchableOpacity>
                 </View>
-                <View style={{}}>
+                <View style={{marginTop: 20,}}>
 
                     <View
                         style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10, }}
@@ -80,13 +122,14 @@ const Login = () => {
                         <Text style={{ color: theme.GREY, fontFamily: 'Poppins' }}>Don't have an account? </Text>
                         <TouchableOpacity
                             onPress={() => {
-
+                                navigation.navigate('SignUp')
                             }}>
                             <Text style={{ color: theme.btnColor, fontFamily: 'Poppins' }}>SignUp</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
             </View>
+            <RiteLoader modalVisible={loaderVisible} setModalVisible={setLoaderVisible} loaderMsg={loaderMsg} />
         </ScrollView>
     )
 }

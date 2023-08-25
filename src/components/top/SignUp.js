@@ -1,18 +1,23 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { ScrollView, StyleSheet, Text, TextInput, View, Image, TouchableOpacity, Platform, PermissionsAndroid, ActivityIndicator, Alert } from 'react-native'
+import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, Platform, PermissionsAndroid, Alert, Button, TextInput } from 'react-native'
 import ThemeContext from '../common/ThemeContext'
 import CustomTextInput from '../common/CustomTextInput';
-import { imgAccount, imgAdd, imgAvatar, imgCamera, imgDelete, imgEmail, imgFacebook, imgGallery, imgGoogle, imgHidePass, imgLocation, imgMobile, imgPassword, imgProfile, imgShowPass } from '../../assets/images';
+import { imgAccount, imgAdd, imgCall, imgCamera, imgEmail, imgFacebook, imgGallery, imgGoogle, imgHidePass, imgLocation, imgPassword, imgProfile, imgShowPass } from '../../assets/images';
 import CustomButton from '../common/CustomButton';
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import ImageCropPicker from 'react-native-image-crop-picker';
-import ImagePicker from 'react-native-image-crop-picker';
 import { statusCodes, GoogleSignin } from '@react-native-google-signin/google-signin';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
+import RiteLoader from '../../utils/helpers/RiteLoader';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { USER_ID } from '../../utils/Keys';
+// import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
-const SignUp = () => {
+const SignUp = ({ navigation }) => {
     const { theme } = useContext(ThemeContext);
     const [name, setName] = useState('');
     const [mobile, setMobile] = useState('');
@@ -23,10 +28,12 @@ const SignUp = () => {
     const [showPassword, setShowPassword] = useState(true);
     const [showCPassword, setCShowPassword] = useState(true);
     const [countryCode, setCountryCode] = useState('92');
-    console.log('myCallingCode', countryCode);
+    const [loaderVisible, setLoaderVisible] = useState(false)
+    const [loaderMsg, setLoaderMsg] = useState('Loading ...')
     const [currentLongitude, setCurrentLongitude] = useState(0);
     const [currentLatitude, setCurrentLatitude] = useState(0);
     const [locationStatus, setLocationStatus] = useState('');
+
 
     const [filePath, setFilePath] = useState('');
 
@@ -39,11 +46,16 @@ const SignUp = () => {
         };
     }, []);
 
-    useEffect(()=>{
-        GoogleSignin.configure({
-            webClientId: "77527106159-ue2l2srsl9jjc0gjd4ft81mq7rasbn5k.apps.googleusercontent.com",
-        });
-    },[])
+    useEffect(() => {
+        GoogleSignin.configure();
+        console.log('aaa');
+    }, [])
+
+    useEffect(() => {
+        // GoogleSignin.configure({
+        //     webClientId: "77527106159-ue2l2srsl9jjc0gjd4ft81mq7rasbn5k.apps.googleusercontent.com",
+        // });
+    }, [])
 
     pickImageFromGallery = () => {
         var options = {
@@ -227,42 +239,105 @@ const SignUp = () => {
         const trimedEmail = email.trim();
         const trimedPassword = password.trim();
         const trimedCPassword = cPassword.trim();
+        filePath === "" ? console.log("Please Select Your Image")
+            : trimedName === "" ? console.log("Please Enter Your Name!")
+                : trimedMobile === "" ? console.log("Please Enter Your Mobile No.!")
+                    : trimedAddress === "" ? console.log("Please Enter Your Address!")
+                        : trimedEmail === "" ? console.log("Please Enter Your Email Address!")
+                            : emailFormate.test(email) === false ? console.log("Entered Email is invalid!")
+                                : trimedPassword === "" ? console.log("Please Enter Your Password!")
+                                    : trimedPassword.length < 6 ? console.log("Password must be at least 6 characters long!")
+                                        : trimedCPassword === "" ? console.log("Please Enter Your Confirm Password!")
+                                            : trimedCPassword !== trimedPassword ? console.log("Passwords do not match.")
+                                                : saveUser(filePath, trimedName, '+' + countryCode + trimedMobile, trimedAddress, trimedEmail, trimedPassword)
+    }
 
-        trimedName === "" ? console.log("Please Enter Your Name!")
-            : trimedMobile === "" ? console.log("Please Enter Your Mobile No.!")
-                : trimedAddress === "" ? console.log("Please Enter Your Address!")
-                    : trimedEmail === "" ? console.log("Please Enter Your Email Address!")
-                        : emailFormate.test(email) === false ? console.log("Entered Email is invalid!")
-                            : trimedPassword === "" ? console.log("Please Enter Your Password!")
-                                : trimedPassword.length < 6 ? console.log("Password must be at least 6 characters long!")
-                                    : trimedCPassword === "" ? console.log("Please Enter Your Confirm Password!")
-                                        : trimedCPassword !== trimedPassword ? console.log("Passwords do not match.")
-                                            : console.log("validated");
+    const saveUser = async (image, name, mobile, address, email, password) => {
+        setLoaderVisible(true)
+        setLoaderMsg('Creating User ...')
+        console.log(image, name, mobile, address, email, password);
+        const id = Date.now();
+        console.log('timeStamp: ', id);
+        try {
+            await AsyncStorage.setItem(USER_ID, id.toString());
+            auth()
+                .createUserWithEmailAndPassword(email, password)
+                .then((res) => {
+                    setLoaderMsg('Storing Your Information ...');
+                    console.log('User Created: ', JSON.stringify(res));
+                    firestore()
+                        .collection('users')
+                        .doc(`${id}`)
+                        .set({
+                            image: image,
+                            name: name,
+                            mobile: mobile,
+                            address: address,
+                            email: email,
+                            password: password,
+                        })
+                        .then(res => {
+                            setLoaderVisible(false)
+                            console.log('UserSaveRes', res);
+                            setFilePath('')
+                            setName('')
+                            setMobile('')
+                            setAddress('')
+                            setEmail('')
+                            setPassword('')
+                            setCPassword('')
+                            navigation.navigate('Login')
+                        })
+                        .catch(error => {
+                            setLoaderVisible(false)
+                            console.log('userSaveError:', error);
+                        });
+                })
+                .catch((error) => {
+                    setLoaderVisible(false)
+                    console.error('createUserError', error);
+                })
+        } catch (error) {
+            console.log('ErrorStoringUserId: ', error);
+        }
     }
 
     const signInWithGoogle = async () => {
         try {
+            console.log("a1");
             await GoogleSignin.hasPlayServices();
-            // await GoogleSignin.signOut();
+            console.log("a2");
+            console.log('GoogleSignin', GoogleSignin);
+
             const userInfo = await GoogleSignin.signIn();
-            // const { idToken } = await GoogleSignin.signIn();
-            // await GoogleSignin.revokeAccess();
-            console.log('userInfo', userInfo, idToken);
-            // create a new firebase credential with the token
-            // const credential = firebase.auth.GoogleAuthProvider.credential(userInfo.idToken, userInfo.accessToken)
-            // login with credential
-            // const firebaseUserCredential = await firebase.auth().signInWithCredential(credential);
+            console.log('User Info :', userInfo);
+            // userData.current = userInfo.user
+            // checkUser(userData?.current?.email)
         } catch (error) {
-            // if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-            //     console.log('User Cancelled the login flow.');
-            // } else if (error.code === statusCodes.IN_PROGRESS) {
-            //     console.log('Sign in is already in progress.');
-            // } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-            //     console.log('Play services are note available or outdated.');
-            // } else {
-                console.log('googleLoginError: ', error);
-            // }
+            console.log('Google Error ==> ', error);
         }
+        // try {
+        //     await GoogleSignin.hasPlayServices();
+        //     // await GoogleSignin.signOut();
+        //     const userInfo = await GoogleSignin.signIn();
+        //     // const { idToken } = await GoogleSignin.signIn();
+        //     // await GoogleSignin.revokeAccess();
+        //     console.log('userInfo', userInfo, idToken);
+        //     // create a new firebase credential with the token
+        //     // const credential = firebase.auth.GoogleAuthProvider.credential(userInfo.idToken, userInfo.accessToken)
+        //     // login with credential
+        //     // const firebaseUserCredential = await firebase.auth().signInWithCredential(credential);
+        // } catch (error) {
+        //     // if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        //     //     console.log('User Cancelled the login flow.');
+        //     // } else if (error.code === statusCodes.IN_PROGRESS) {
+        //     //     console.log('Sign in is already in progress.');
+        //     // } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        //     //     console.log('Play services are note available or outdated.');
+        //     // } else {
+        //         console.log('googleLoginError: ', error);
+        //     // }
+        // }
     }
 
     return (
@@ -398,13 +473,13 @@ const SignUp = () => {
                     placeholder={'Confirm Password'}
                     placeholderTextColor={theme.GREY}
                     autoCapitalize='none'
-                    startIcon={imgDelete}
+                    startIcon={imgPassword}
                     endIcon={showCPassword ? imgShowPass : imgHidePass}
                     endIconPress={() => {
                         setCShowPassword(!showCPassword)
                     }}
                     value={cPassword}
-                    secureTextEntry={showPassword}
+                    secureTextEntry={showCPassword}
                     onChangeText={(val) => setCPassword(val)}
                 />
 
@@ -421,21 +496,26 @@ const SignUp = () => {
                     <Text style={{ marginLeft: 10, marginRight: 10, color: theme.textColor1 }}>OR</Text>
                     <View style={{ height: .5, width: '100%', backgroundColor: theme.GREY }}><Text>aa</Text></View>
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
                     <TouchableOpacity
                         onPress={() => {
 
                         }}
                     >
-                        <Image source={imgFacebook} style={{ width: 54, height: 54, }} />
+                        <Image source={imgFacebook} style={{ width: 44, height: 44, }} />
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => signInWithGoogle()}
                     >
-                        <Image source={imgGoogle} style={{ width: 54, height: 54, marginLeft: 40, }} />
+                        <Image source={imgGoogle} style={{ width: 44, height: 44, marginLeft: 30, }} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate('MobileAuthentication')}
+                    >
+                        <Image source={imgCall} style={{ width: 44, height: 44, marginLeft: 30, }} />
                     </TouchableOpacity>
                 </View>
-                <View style={{}}>
+                <View style={{ marginTop: 20, }}>
 
                     <View
                         style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10, }}
@@ -443,14 +523,14 @@ const SignUp = () => {
                         <Text style={{ color: theme.GREY, fontFamily: 'Poppins' }}>Already have an account? </Text>
                         <TouchableOpacity
                             onPress={() => {
-
+                                navigation.navigate('Login')
                             }}>
                             <Text style={{ color: theme.btnColor, fontFamily: 'Poppins' }}>Login</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
             </View>
-
+            <RiteLoader setModalVisible={setLoaderVisible} modalVisible={loaderVisible} loaderMsg={loaderMsg} />
         </ScrollView>
     )
 }

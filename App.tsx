@@ -5,16 +5,19 @@ import { Provider } from 'react-redux';
 import { persister, store } from './src/redux/store/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import { ThemeProvider } from './src/components/common/ThemeContext';
+import { TourGuideProvider } from 'rn-tourguide';
 
 const App = () => {
   return (
-    <ThemeProvider>
-      <Provider store={store}>
-        <PersistGate loading={<Text>Loading...</Text>} persistor={persister}>
-          <AppNavigator />
-        </PersistGate>
-      </Provider>
-    </ThemeProvider>
+    <TourGuideProvider {...{borderRadius: 16,}} preventOutsideInteraction={true} androidStatusBarVisible={true}>
+      <ThemeProvider>
+        <Provider store={store}>
+          <PersistGate loading={<Text>Loading...</Text>} persistor={persister}>
+            <AppNavigator />
+          </PersistGate>
+        </Provider>
+      </ThemeProvider>
+    </TourGuideProvider>
   )
 }
 

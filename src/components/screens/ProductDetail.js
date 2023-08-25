@@ -6,8 +6,9 @@ import { Color } from '../../styles/Color';
 import { imgCart, imgStar } from '../../assets/images';
 import CustomButton from '../common/CustomButton';
 import actions from '../../redux/actions';
-import { CommonActions } from '@react-navigation/native';
+import { CommonActions, useFocusEffect } from '@react-navigation/native';
 import ThemeContext from '../common/ThemeContext';
+import TourWrapper from '../../utils/helpers/TourWrapper';
 
 const ProductDetail = ({ navigation, route }) => {
     const { product_id } = route.params;
@@ -88,14 +89,24 @@ const ProductDetail = ({ navigation, route }) => {
                     })}
                 </Swiper>}
             </View>
-            <TouchableOpacity
-                style={{ width: 42, height: 42, backgroundColor: theme.statusBarColor, borderRadius: 21, padding: 5, alignItems: 'center', justifyContent: 'center', position: 'absolute', top: 10, right: 10, }}
-                onPress={() => navigation.navigate('Cart')}>
-                <Image source={imgCart} style={{ width: 20, height: 20, tintColor: Color.WHITE }} />
-            </TouchableOpacity>
+            <TourWrapper tourKey={'results1'} zone={2} text='Goto Cart' style={{ position: 'absolute', top: 10, right: 10, }}
+                onStop={() => {
+                    const product = products.find((item) => {
+                        return item.id === product_id ? item : null
+                    })
+                    console.log('currentProduct', product);
+                    AddItemToCart(product)
+                    navigation.navigate('Cart')
+                }}>
+                <TouchableOpacity
+                    style={{ width: 42, height: 42, backgroundColor: theme.statusBarColor, borderRadius: 21, padding: 5, alignItems: 'center', justifyContent: 'center', }}
+                    onPress={() => navigation.navigate('Cart')}>
+                    <Image source={imgCart} style={{ width: 20, height: 20, tintColor: Color.WHITE }} />
+                </TouchableOpacity>
+            </TourWrapper>
             <View style={{ width: "95%", backgroundColor: theme.primaryColor, alignSelf: 'center', marginTop: 10, paddingHorizontal: 10, paddingTop: 15, paddingBottom: 15, borderRadius: 10 }}>
                 <Text style={{ textAlign: 'left', fontFamily: 'Poppins', textTransform: 'capitalize', color: theme.textColor1, }}>{productData.title}</Text>
-                <Text style={{ fontFamily: 'SourceSansPro', color: theme.GREY}}>{productData.description}</Text>
+                <Text style={{ fontFamily: 'SourceSansPro', color: theme.GREY }}>{productData.description}</Text>
 
                 <View style={{ flexDirection: 'row', marginTop: 10, justifyContent: 'space-between' }}>
                     <View style={{ flexDirection: 'row' }}>
@@ -162,13 +173,15 @@ const ProductDetail = ({ navigation, route }) => {
                     style={{ width: 170, backgroundColor: isFavourite ? theme.GREY : Color.RED }}
                     onPress={() => dispatch(actions.addToFavourite(productData))}
                 />
-                <CustomButton
-                    title={'+ Add to Cart'}
-                    disabled={isInCart ? true : false}
-                    style={{ width: 170, backgroundColor: isInCart ? theme.GREY : theme.btnColor, marginLeft: 5, }}
-                    textStyle={{color: theme.textColor}}
-                    onPress={() => AddItemToCart(productData)}
-                />
+                <TourWrapper tourKey={'results1'} zone={1} text='Press the "+ Add to Cart" button' onStop={() => { }}>
+                    <CustomButton
+                        title={'+ Add to Cart'}
+                        disabled={isInCart ? true : false}
+                        style={{ width: 170, backgroundColor: isInCart ? theme.GREY : theme.btnColor, marginLeft: 5, }}
+                        textStyle={{ color: theme.textColor }}
+                        onPress={() => AddItemToCart(productData)}
+                    />
+                </TourWrapper>
             </View>
         </ScrollView >
     )

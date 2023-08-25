@@ -26,5 +26,8 @@ export const imgProfile = require('../images/profile.png');
 export const imgAdd = require('../images/add.png');
 export const imgGallery = require('../images/gallery.png');
 export const imgCamera = require('../images/camera.png');
+export const imgDown = require('../images/down.png');
+export const imgEdit = require('../images/edit.png');
+export const imgCall = require('../images/call.png')
 
 export const imgAvatar = {uri: 'https://media.istockphoto.com/id/1090878494/photo/close-up-portrait-of-young-smiling-handsome-man-in-blue-polo-shirt-isolated-on-gray-background.jpg?s=612x612&w=0&k=20&c=AycQ2obu8sgJxWAJgYBbYR6jeRB9Bhs1JZBXzSgL6LE='}

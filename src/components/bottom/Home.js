@@ -1,5 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { StatusBar, StyleSheet, Text, View, FlatList, ScrollView, Image, TouchableOpacity, ActivityIndicator, TouchableWithoutFeedback, SafeAreaView, BackHandler } from 'react-native'
+import {
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator,
+  TouchableWithoutFeedback,
+  SafeAreaView,
+  BackHandler,
+
+} from 'react-native'
 import actions from '../../redux/actions'
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '../../redux/actions/myAction';
@@ -11,6 +25,7 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { Modal } from 'react-native-paper';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import ThemeContext from '../common/ThemeContext';
+import TourWrapper from '../../utils/helpers/TourWrapper';
 
 const Home = ({ navigation }) => {
   const [data, setData] = useState([]);
@@ -19,7 +34,7 @@ const Home = ({ navigation }) => {
   const [exitDialogVisible, setExitDialogVisible] = useState(false);
 
   const { theme } = useContext(ThemeContext)
-  
+
   const tabBarHeight = useBottomTabBarHeight()
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products.productsData);
@@ -101,7 +116,7 @@ const Home = ({ navigation }) => {
   ///////// handle back press end //////////
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: theme.backgroundColor}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.backgroundColor }}>
       <View>
         <StatusBar backgroundColor={theme.statusBarColor} barStyle={'light-content'} />
         <CustomHeader
@@ -166,6 +181,17 @@ const Home = ({ navigation }) => {
             </ScrollView>
           </View>
 
+          <TourWrapper tourKey={'results'} zone={1} text='Welcome to myStore' style={{ width: 1, height: 1, }} onStop={() => { }} />
+          <TourWrapper
+            tourKey={'results'}
+            zone={2}
+            text='Click any item from the below list'
+            style={{ position: 'absolute', bottom: 0, width: "95%", height: 500, margin: 5, }}
+            onStop={() => {
+              navigation.navigate('ProductDetail', {
+                product_id: data[0]?.id,
+              })
+            }}></TourWrapper>
           {data && <FlatList
             style={{ flex: 1, alignSelf: "center", width: "100%", }}
             data={data}

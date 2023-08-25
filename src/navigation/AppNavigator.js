@@ -8,6 +8,8 @@ import ProductDetail from '../components/screens/ProductDetail';
 import ContactUs from '../components/drawer/ContactUs';
 import About from '../components/drawer/About';
 import AuthenticationScreen from '../components/screens/AuthenticationScreen';
+import UserProfile from '../components/screens/UserProfile';
+import MobileAuthentication from '../components/screens/MobileAuthentication';
 
 const AppNavigator = () => {
     const Stack = createNativeStackNavigator();
@@ -21,6 +23,8 @@ const AppNavigator = () => {
                 <Stack.Screen name='ContactUs' component={ContactUs} />
                 <Stack.Screen name='About' component={About} />
                 <Stack.Screen name='AuthenticationScreen' component={AuthenticationScreen} />
+                <Stack.Screen name='UserProfile' component={UserProfile} />
+                <Stack.Screen name='MobileAuthentication' component={MobileAuthentication}/>
             </Stack.Navigator>
         </NavigationContainer>
     )

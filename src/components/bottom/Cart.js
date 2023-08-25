@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { StyleSheet, Text, View, FlatList, Image, TouchableOpacity, Alert, Dimensions } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { Color } from '../../styles/Color'
@@ -6,10 +6,12 @@ import actions from '../../redux/actions'
 import CustomButton from '../common/CustomButton'
 import AnimatedLottieView from 'lottie-react-native'
 import { gifEmptyCart } from '../../assets/gifs'
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import ThemeContext from '../common/ThemeContext'
 import RazorpayCheckout from 'react-native-razorpay';
 import { imgLogo } from '../../assets/images'
+import TourWrapper from '../../utils/helpers/TourWrapper'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Cart = () => {
   const cartItems = useSelector((state) => state.myCart.cartItems);
@@ -56,44 +58,61 @@ const Cart = () => {
     return totalPrice;
   }
 
+  const payNow = () => {
+    var options = {
+      description: 'Credits towards consultation',
+      image: { imgLogo },
+      currency: 'INR',
+      // key: '<YOUR_KEY_ID>',
+      key: 'rzp_test_PLbERPkkqGZkOF',
+      amount: totalPrice() * 100,
+      name: 'My Store',
+      order_id: '',//Replace this with an order_id created using Orders API.
+      prefill: {
+        email: 'alien.air@gmail.com',
+        contact: '9292929292',
+        name: 'Alien Air'
+      },
+      theme: { color: Color.BLUE }
+    }
+    RazorpayCheckout.open(options).then((data) => {
+      // handle success
+      Alert.alert(`Success: ${data.razorpay_payment_id}`);
+      console.log("OrderData: ", data);
+    }).catch((error) => {
+      // handle failure
+      Alert.alert(`Error: ${error.code} | ${error.description}`);
+      console.log("Error: ", error);
+    });
+  }
+
+  const handleStopTour = async () => {
+    try {
+      await AsyncStorage.setItem('tourShown', 'true');
+      payNow()
+    } catch (error) {
+      console.log('ErrorTourShown', error);
+    }
+  }
+
   return (
     <View style={{ flex: 1, backgroundColor: theme.backgroundColor }}>
       {cartItems.length > 0 &&
         <View style={{ width: width, flexDirection: 'row', backgroundColor: theme.primaryColor, elevation: 5, padding: 10, justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text>Total: {getTotalPrice()}</Text>
-          <CustomButton
-            title={`Check Out (${cartItems.length})`}
-            style={{ backgroundColor: theme.btnColor }}
-            textStyle={{color: theme.textColor}}
-            onPress={()=>{
-              // console.log("pressed: ", totalPrice());
-              var options = {
-                description: 'Credits towards consultation',
-                image: {imgLogo},
-                currency: 'INR',
-                // key: '<YOUR_KEY_ID>',
-                key: 'rzp_test_PLbERPkkqGZkOF',
-                amount: totalPrice()*100,
-                name: 'My Store',
-                order_id: '',//Replace this with an order_id created using Orders API.
-                prefill: {
-                  email: 'alien.air@gmail.com',
-                  contact: '9292929292',
-                  name: 'Alien Air'
-                },
-                theme: {color: Color.BLUE}
-              }
-              RazorpayCheckout.open(options).then((data) => {
-                // handle success
-                Alert.alert(`Success: ${data.razorpay_payment_id}`);
-                console.log("OrderData: ", data);
-              }).catch((error) => {
-                // handle failure
-                Alert.alert(`Error: ${error.code} | ${error.description}`);
-                console.log("Error: ", error);
-              });
-            }}
-          />
+          <TourWrapper tourKey={'results2'} zone={1} text='This is total amount to pay for your order.' onStop={() => handleStopTour()}>
+            <Text>Total: {getTotalPrice()}</Text>
+          </TourWrapper>
+          <TourWrapper tourKey={'results2'} zone={2} text='Press this button to checkout your order.' onStop={() => handleStopTour()}>
+            <CustomButton
+              title={`Check Out (${cartItems.length})`}
+              style={{ backgroundColor: theme.btnColor }}
+              textStyle={{ color: theme.textColor }}
+              onPress={() => {
+                // console.log("pressed: ", totalPrice());
+                payNow();
+              }}
+            />
+          </TourWrapper>
         </View>}
       {cartItems.length > 0 ?
         <FlatList
@@ -151,7 +170,7 @@ const Cart = () => {
                             }}> - </Text>
                           </TouchableOpacity>
                         )}
-                        <Text style={{ fontFamily: 'Poppins', fontSize: 16, alignSelf: 'center', marginLeft: 10, marginRight: 10,}}> {item.quantity} </Text>
+                        <Text style={{ fontFamily: 'Poppins', fontSize: 16, alignSelf: 'center', marginLeft: 10, marginRight: 10, }}> {item.quantity} </Text>
                         <TouchableOpacity
                           style={{ width: 50, height: 30, backgroundColor: theme.btnColor, alignItems: 'center', justifyContent: 'center', borderRadius: 10, }}
                           onPress={() => {
@@ -186,8 +205,8 @@ const Cart = () => {
           />
           <CustomButton
             title={"Continue Shopping ..."}
-            style={{ marginTop: 40, backgroundColor: theme.btnColor}}
-            textStyle={{color: theme.textColor}}
+            style={{ marginTop: 40, backgroundColor: theme.btnColor }}
+            textStyle={{ color: theme.textColor }}
             onPress={() => navigation.goBack()}
           />
         </View>}

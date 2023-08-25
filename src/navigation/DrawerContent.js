@@ -32,8 +32,8 @@ export const DrawerContent = ({ props, navigation }) => {
                                 size={60}
                             />
                             <View style={{ marginLeft: 15, flexDirection: 'column' }}>
-                                <Title style={[styles.title,{color: theme.textColor1}]}>Sahal Sherazi</Title>
-                                <Caption style={[styles.caption, {color: theme.GREY}]}>@sahilsherazi1712</Caption>
+                                <Title style={[styles.title, { color: theme.textColor1 }]}>Sahal Sherazi</Title>
+                                <Caption style={[styles.caption, { color: theme.GREY }]}>@sahilsherazi1712</Caption>
                             </View>
                         </View>
 
@@ -55,7 +55,7 @@ export const DrawerContent = ({ props, navigation }) => {
                                 <Icon name='home-outline' color={theme.GREY} size={size} />
                             )}
                             label="Home"
-                            labelStyle={{color: theme.GREY}}
+                            labelStyle={{ color: theme.GREY }}
                             onPress={() => { navigation.navigate("Home") }}
                         />
                         <DrawerItem
@@ -63,7 +63,7 @@ export const DrawerContent = ({ props, navigation }) => {
                                 <Icon name='account-outline' color={theme.GREY} size={size} />
                             )}
                             label="Profile"
-                            labelStyle={{color: theme.GREY}}
+                            labelStyle={{ color: theme.GREY }}
                             onPress={() => { navigation.navigate("Account") }}
                         />
                         <DrawerItem
@@ -71,7 +71,7 @@ export const DrawerContent = ({ props, navigation }) => {
                                 <Icon name='email-outline' color={theme.GREY} size={size} />
                             )}
                             label="Contact Us"
-                            labelStyle={{color: theme.GREY}}
+                            labelStyle={{ color: theme.GREY }}
                             onPress={() => { navigation.navigate("ContactUs") }}
                         />
                         <DrawerItem
@@ -79,7 +79,7 @@ export const DrawerContent = ({ props, navigation }) => {
                                 <Icon name='information-outline' color={theme.GREY} size={size} />
                             )}
                             label="About"
-                            labelStyle={{color: theme.GREY}}
+                            labelStyle={{ color: theme.GREY }}
                             onPress={() => { navigation.navigate("About") }}
                         />
                     </Drawer.Section>
@@ -90,7 +90,7 @@ export const DrawerContent = ({ props, navigation }) => {
                             console.log("theme", theme.themeId);
                         }}>
                             <View style={styles.prefereces}>
-                                <Text style = {{color: theme.GREY}}>Dark Theme</Text>
+                                <Text style={{ color: theme.GREY }}>Dark Theme</Text>
                                 <View pointerEvents='none'>
                                     {/* <Switch value={theme === 'dark'} onValueChange={() => toggleTheme()} /> */}
                                     <Switch
@@ -111,7 +111,7 @@ export const DrawerContent = ({ props, navigation }) => {
                         <Icon name='exit-to-app' color={theme.GREY} size={size} />
                     )}
                     label="Sign Out"
-                    labelStyle={{color: theme.GREY}}
+                    labelStyle={{ color: theme.GREY }}
                     onPress={() => { setExitDialogVisible(true) }}
                 />
             </Drawer.Section>

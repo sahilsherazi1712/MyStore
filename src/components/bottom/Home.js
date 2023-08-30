@@ -199,6 +199,12 @@ const Home = ({ navigation }) => {
             numColumns={2}
             keyExtractor={(item) => item.id}
             showsVerticalScrollIndicator={false}
+            ListFooterComponent={()=>{
+              return(
+                <Text>No More Data</Text>
+              )
+            }}
+            ListFooterComponentStyle={{height: 140, alignItems: 'center', marginTop: 20}}
             renderItem={({ item, index }) => {
               return (
                 // <View>

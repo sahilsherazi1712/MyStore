@@ -80,7 +80,7 @@ export const DrawerContent = ({ props, navigation }) => {
                             )}
                             label="About"
                             labelStyle={{ color: theme.GREY }}
-                            onPress={() => { navigation.navigate("About") }}
+                            onPress={() => { navigation.navigate("About", {'privacy': false}) }}
                         />
                     </Drawer.Section>
                     <Drawer.Section title='Preferences'>
@@ -110,7 +110,7 @@ export const DrawerContent = ({ props, navigation }) => {
                     icon={({ color, size }) => (
                         <Icon name='exit-to-app' color={theme.GREY} size={size} />
                     )}
-                    label="Sign Out"
+                    label="Exit"
                     labelStyle={{ color: theme.GREY }}
                     onPress={() => { setExitDialogVisible(true) }}
                 />

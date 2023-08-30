@@ -10,7 +10,7 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import RiteLoader from '../../utils/helpers/RiteLoader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { IS_USER_LOGGED_IN, USER_ID } from '../../utils/Keys';
+import { IS_USER_LOGGED_IN } from '../../utils/Keys';
 import ThemeContext from '../common/ThemeContext';
 import { useIsFocused } from '@react-navigation/native';
 import { Color } from '../../styles/Color';
@@ -139,10 +139,10 @@ const UserProfile = ({ navigation, route }) => {
         setLoaderMsg('Updating ...')
         console.log(image, name, mobile, address);
         try {
-            const userId = await AsyncStorage.getItem(USER_ID);
+            const uid = auth().currentUser.uid;
             firestore()
                 .collection('users')
-                .doc(`${userId}`)
+                .doc(uid)
                 .update({
                     image: image,
                     name: name,
@@ -184,7 +184,7 @@ const UserProfile = ({ navigation, route }) => {
         setLoaderVisible(true)
         setLoaderMsg('Updating Your Email ...')
         try {
-            const userId = await AsyncStorage.getItem(USER_ID)
+            const userId = auth().currentUser.uid;
             auth()
                 .signInWithEmailAndPassword(email, password)
                 .then(async (res) => {
@@ -458,17 +458,21 @@ const UserProfile = ({ navigation, route }) => {
                                     console.log(forgetEmail);
                                     setLoaderMsg('Sending you an email ...')
                                     setLoaderVisible(true);
-                                    auth()
-                                        .sendPasswordResetEmail(forgetEmail)
-                                        .then((res) => {
-                                            setLoaderVisible(false);
-                                            setShowForgetPassModal(false);
-                                            console.log('SendEmailRes: ', res);
-                                            Alert.alert('Note', 'Please check your email.');
-                                        })
-                                        .catch((error)=> {
-                                            console.log('SendEmailError: ', error);
-                                        })
+                                    try {
+                                        auth()
+                                            .sendPasswordResetEmail(forgetEmail)
+                                            .then((res) => {
+                                                setLoaderVisible(false);
+                                                setShowForgetPassModal(false);
+                                                console.log('SendEmailRes: ', res);
+                                                Alert.alert('Note', 'Please check your email.');
+                                            })
+                                            .catch((error) => {
+                                                console.log('SendEmailError: ', error);
+                                            })
+                                    } catch (error) {
+                                        console.log('Error: ', error);
+                                    }
                                 }}
                             />
                         </View>
@@ -501,18 +505,22 @@ const UserProfile = ({ navigation, route }) => {
                                     console.log(forgetEmail);
                                     setLoaderMsg('logging out ...')
                                     setLoaderVisible(true);
-                                    auth()
-                                        .signOut()
-                                        .then(async(res) => {
-                                            setLoaderVisible(false);
-                                            setShowLogoutModal(false);
-                                            console.log('logoutRes', res);
-                                            navigation.navigate('Account')
-                                            await AsyncStorage.setItem(IS_USER_LOGGED_IN, '');
-                                        })
-                                        .catch((error)=>{
-                                            console.log('LogoutError: ', error);
-                                        })
+                                    try {
+                                        auth()
+                                            .signOut()
+                                            .then(async (res) => {
+                                                setLoaderVisible(false);
+                                                setShowLogoutModal(false);
+                                                console.log('logoutRes', res);
+                                                navigation.navigate('Account')
+                                                await AsyncStorage.setItem(IS_USER_LOGGED_IN, '');
+                                            })
+                                            .catch((error) => {
+                                                console.log('LogoutError: ', error);
+                                            })
+                                    } catch (error) {
+                                        console.log('Error: ', error);
+                                    }
                                 }}
                             />
                         </View>

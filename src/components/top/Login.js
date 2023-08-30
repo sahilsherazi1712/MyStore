@@ -7,9 +7,10 @@ import CustomButton from '../common/CustomButton';
 import RiteLoader from '../../utils/helpers/RiteLoader';
 import auth from '@react-native-firebase/auth'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { EMAIL_PASS_LOGIN, IS_USER_LOGGED_IN } from '../../utils/Keys';
+import { EMAIL_PASS_LOGIN, IS_USER_LOGGED_IN, USER_DATA, USER_ID } from '../../utils/Keys';
+import firebase from '@react-native-firebase/firestore';
 
-const Login = ({navigation}) => {
+const Login = ({ navigation }) => {
     const { theme } = useContext(ThemeContext);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -33,8 +34,21 @@ const Login = ({navigation}) => {
                 .signInWithEmailAndPassword(email, password)
                 .then(async (res) => {
                     setLoaderVisible(false)
+                    const uuid = res.user.uid;
                     await AsyncStorage.setItem(IS_USER_LOGGED_IN, 'true')
-                    console.log('LoginInRes: ',res);
+                    await AsyncStorage.setItem(USER_ID, uuid)
+                    firebase()
+                        .collection('users')
+                        .doc(uuid)
+                        .get()
+                        .then(async(res) => {
+                            console.log('data: ',res._data);
+                            await AsyncStorage.setItem(USER_DATA, JSON.stringify(res._data));
+                        })
+                        .catch((e) => {
+                            console.log('Error:', e);
+                        })
+                    console.log('LoginInRes: ', res);
                     setEmail('')
                     setPassword('')
                     navigation.navigate('Account')
@@ -93,7 +107,7 @@ const Login = ({navigation}) => {
                     <Text style={{ marginLeft: 10, marginRight: 10, color: theme.textColor1 }}>OR</Text>
                     <View style={{ height: .5, width: '100%', backgroundColor: theme.GREY }}><Text>aa</Text></View>
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10}}>
+                <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
                     <TouchableOpacity
                         onPress={() => {
 
@@ -108,13 +122,8 @@ const Login = ({navigation}) => {
                     >
                         <Image source={imgGoogle} style={{ width: 44, height: 44, marginLeft: 30, }} />
                     </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => {}}
-                    >
-                        <Image source={imgCall} style={{ width: 44, height: 44, marginLeft: 30, }} />
-                    </TouchableOpacity>
                 </View>
-                <View style={{marginTop: 20,}}>
+                <View style={{ marginTop: 20, }}>
 
                     <View
                         style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10, }}

@@ -5,9 +5,10 @@ import { Color } from '../../styles/Color'
 import { imgAvatar, imgDown, imgEdit, imgNext, imgProfile } from '../../assets/images'
 import ThemeContext from '../common/ThemeContext'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { IS_USER_LOGGED_IN, USER_ID } from '../../utils/Keys';
+import { IS_USER_LOGGED_IN, } from '../../utils/Keys';
 import firestore from '@react-native-firebase/firestore';
 import { useIsFocused } from '@react-navigation/native'
+import auth from '@react-native-firebase/auth'
 
 const Account = ({ navigation }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -22,16 +23,20 @@ const Account = ({ navigation }) => {
   }, [isFocued])
 
   const fetchUserDetails = async () => {
-    const userId = await AsyncStorage.getItem(USER_ID);
-    if (userId !== '') {
-      firestore()
-        .collection('users')
-        .doc(`${userId}`)
-        .get()
-        .then((res) => {
-          console.log('userData', res._data);
-          setUserProfie(res._data)
-        })
+    try {
+      const uid = auth().currentUser.uid;
+      if (uid !== '') {
+        firestore()
+          .collection('users')
+          .doc(uid)
+          .get()
+          .then((res) => {
+            console.log('userData', res._data);
+            setUserProfie(res._data)
+          })
+      }
+    } catch (error) {
+      console.log('Error: ', error);
     }
   }
 
@@ -83,7 +88,7 @@ const Account = ({ navigation }) => {
               <Text style={{ fontSize: 16, fontWeight: 'bold', fontFamily: 'Poppins', color: theme.textColor1 }}>{userProfile ? userProfile.name : 'Your Name'}</Text>
               <Text style={{ fontSize: 14, fontFamily: 'Poppins', color: theme.GREY }}>{userProfile ? userProfile.email : 'yourmail@gmail.com'}</Text>
             </View>
-            <TouchableOpacity style={{width: "10%", padding: 10,}} onPress={()=> navigation.navigate('UserProfile', {'userData': userProfile})}>
+            <TouchableOpacity style={{ width: "10%", padding: 10, }} onPress={() => navigation.navigate('UserProfile', { 'userData': userProfile })}>
               <Image source={imgEdit} style={{ width: 18, height: 18 }} />
             </TouchableOpacity>
           </View>
@@ -114,7 +119,7 @@ const Account = ({ navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 7, }}
-          onPress={() => { }}
+          onPress={() => { navigation.navigate('ContactUs') }}
         >
           <Text style={{ fontFamily: 'Poppins', fontSize: 14, color: theme.GREY }}>FeedBack</Text>
           <Image source={imgNext} style={{ width: 18, height: 18, tintColor: theme.GREY }} />
@@ -124,7 +129,7 @@ const Account = ({ navigation }) => {
         <Text style={{ padding: 7, fontSize: 16, fontWeight: '700', color: theme.textColor1 }}>Privacy</Text>
         <TouchableOpacity
           style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 7, }}
-          onPress={() => { }}
+          onPress={() => navigation.navigate('About', { 'privacy': true })}
         >
           <Text style={{ fontFamily: 'Poppins', fontSize: 14, color: theme.GREY }}>Privary Policy</Text>
           <Image source={imgNext} style={{ width: 18, height: 18, tintColor: theme.GREY }} />

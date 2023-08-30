@@ -29,7 +29,7 @@ const CustomTextInput = ({
 
     return (
         <View style={{ marginTop: 10, }}>
-            <Text style={{ padding: 3, color: theme.btnColor, textAlign: 'left', fontFamily: 'Poppins' }}>{label}:</Text>
+            <Text style={{ padding: 3, color: theme.btnColor, textAlign: 'left', fontFamily: 'Poppins' }}>{label}</Text>
             <TouchableOpacity
                 onPress={() => {
                     touchable && (

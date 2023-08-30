@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, Platform, PermissionsAndroid, Alert, Button, TextInput } from 'react-native'
+import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, Platform, PermissionsAndroid, Alert, Button, TextInput, Modal } from 'react-native'
 import ThemeContext from '../common/ThemeContext'
 import CustomTextInput from '../common/CustomTextInput';
 import { imgAccount, imgAdd, imgCall, imgCamera, imgEmail, imgFacebook, imgGallery, imgGoogle, imgHidePass, imgLocation, imgPassword, imgProfile, imgShowPass } from '../../assets/images';
@@ -9,16 +9,22 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import RiteLoader from '../../utils/helpers/RiteLoader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { IS_USER_LOGGED_IN, MOBILE_AUTH_ID, MOBILE_AUTH_LOGIN, USER_ID } from '../../utils/Keys';
+import { IS_USER_LOGGED_IN, MOBILE_AUTH_ID, MOBILE_AUTH_LOGIN, } from '../../utils/Keys';
 import AnimatedLottieView from 'lottie-react-native';
 import { gifMobileAuth } from '../../assets/gifs';
+import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell, } from 'react-native-confirmation-code-field';
+
+const CELL_COUNT = 6;
 
 const MobileAuthentication = ({ navigation }) => {
     const { theme } = useContext(ThemeContext);
-    const [mobile, setMobile] = useState('1234567890');
+    const [mobile, setMobile] = useState('');
     const [countryCode, setCountryCode] = useState('92');
-    const [loaderVisible, setLoaderVisible] = useState(false)
-    const [loaderMsg, setLoaderMsg] = useState('Loading ...')
+    const [loaderVisible, setLoaderVisible] = useState(false);
+    const [loaderMsg, setLoaderMsg] = useState('Loading ...');
+    const [value, setValue] = useState('');
+    const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
+    const [props, getCellOnLayoutHandler] = useClearByFocusCell({ value, setValue, });
 
     const rbSheetRef = useRef();
 
@@ -27,22 +33,22 @@ const MobileAuthentication = ({ navigation }) => {
     const [confirm, setConfirm] = useState(null);
 
     // verification code (OTP - One-Time-Passcode)
-    const [code, setCode] = useState('');
 
     // Handle login
-    const onAuthStateChanged = (user) => {
-        if (user) {
-            // Some Android devices can automatically process the verification code (OTP) message, and the user would NOT need to enter the code.
-            // Actually, if he/she tries to enter it, he/she will get an error message because the code was already used in the background.
-            // In this function, make sure you hide the component(s) for entering the code and/or navigate away from this screen.
-            // It is also recommended to display a message to the user informing him/her that he/she has successfully logged in.
-        }
-    }
+    // const onAuthStateChanged = (user) => {
+    //     if (user) {
+    //         // Some Android devices can automatically process the verification code (OTP) message, and the user would NOT need to enter the code.
+    //         // Actually, if he/she tries to enter it, he/she will get an error message because the code was already used in the background.
+    //         // In this function, make sure you hide the component(s) for entering the code and/or navigate away from this screen.
+    //         // It is also recommended to display a message to the user informing him/her that he/she has successfully logged in.
+    //     }
+    // }
 
-    useEffect(() => {
-        const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-        return subscriber; // unsubscribe on unmount
-    }, []);
+    // useEffect(() => {
+    //     // rbSheetRef.current.open()
+    //     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    //     return subscriber; // unsubscribe on unmount
+    // }, []);
 
     // Handle the button press
     const signUpWithPhoneNumber = () => {
@@ -63,35 +69,13 @@ const MobileAuthentication = ({ navigation }) => {
             const confirmation = await auth().signInWithPhoneNumber(mobile);
             setConfirm(confirmation);
             console.log('bbb', confirmation);
-            if (confirm !== '') {
-                firestore()
-                    .collection('users')
-                    .doc(`${id}`)
-                    .set({
-                        mobile: mobile,
-                    })
-                    .then((res) => {
-                        setLoaderVisible(false)
-                        console.log('UserSaveRes', res);
-                        setMobile('')
-                        navigation.navigate('Account')
-                    })
-                    .catch((error) => {
-                        setLoaderVisible(false)
-                        console.log('userSaveError:', error);
-                    });
+            if (confirmation !== "") {
+                rbSheetRef.current.open()
+                setLoaderVisible(false)
             }
         } catch (error) {
             setLoaderVisible(false)
             console.log('signInWithPhoneNumberError', error);
-        }
-    }
-    const confirmCode = async () => {
-        try {
-            await confirm.confirm(code);
-            console.log('success');
-        } catch (error) {
-            console.log('Invalid code.');
         }
     }
 
@@ -105,53 +89,83 @@ const MobileAuthentication = ({ navigation }) => {
     //     );
     // }
     //////////////////////// Mobile No Authentication End   ////////////////////////
+    console.log(mobile);
+    console.log('value',value);
 
     return (
         <ScrollView style={{ flex: 1, backgroundColor: theme.primaryColor, elevation: 5, paddingHorizontal: 20, }}>
             <View style={{ marginTop: 50, }}>
-                <View style={{ alignItems: 'center' }}>
+                <RBSheet
+                    ref={rbSheetRef}
+                    closeOnDragDown={true}
+                    closeOnPressMask={true}
+                    height={310}
+                    customStyles={{
+                        wrapper: {
+                            //   backgroundColor: "transparent"
+                        },
+                        container: {
+                            borderTopLeftRadius: 20,
+                            borderTopRightRadius: 20,
+                            // alignItems: 'center',
+                            // justifyContent: 'center',
+                        },
+                        draggableIcon: {
+                            backgroundColor: theme.GREY
+                        }
+                    }}
+                >
+                    <View style={{ paddingLeft: 25, paddingRight: 25, backgroundColor: theme.primaryColor, shadowColor: theme.textColor1, margin: 10, }}>
+                        <Text style={{ color: theme.textColor1, fontWeight: '500', marginBottom: 5, textAlign: 'center', fontSize: 18, marginTop: 15, }}>OTP</Text>
+                        <Text style={{ color: theme.textColor1, marginBottom: 5, textAlign: 'center', fontSize: 14, opacity: .7 }}>Provide the otp, you just received to complete your registration.</Text>
+                        <CodeField
+                            ref={ref}
+                            {...props}
+                            // Use `caretHidden={false}` when users can't paste a text value, because context menu doesn't appear
+                            value={value}
+                            // caretHidden={false}
+                            onChangeText={setValue}
+                            cellCount={CELL_COUNT}
+                            rootStyle={{ marginTop: 20 }}
+                            keyboardType="number-pad"
+                            textContentType="oneTimeCode"
+                            renderCell={({ index, symbol, isFocused }) => (
+                                <Text
+                                    key={index}
+                                    style={{
+                                        width: 40,
+                                        height: 40,
+                                        lineHeight: 38,
+                                        fontSize: 24,
+                                        borderWidth: 2,
+                                        borderColor: isFocused ? theme.btnColor : theme.GREY,
+                                        textAlign: 'center',
+                                    }}
+                                    // style={[styles.cell, isFocused && styles.focusCell]}
+                                    onLayout={getCellOnLayoutHandler(index)}>
+                                    {symbol || (isFocused ? <Cursor /> : null)}
+                                </Text>
+                            )}
+                        />
+                        <CustomButton
+                            title={'Continue'}
+                            style={{ marginTop: 30, }}
+                            onPress={async () => {
+                                setLoaderMsg('Storing Data ...')
+                                setLoaderVisible(true);
+                                try {
+                                    setLoaderVisible(false)
+                                    const msg = await confirm.confirm(value);
+                                    console.log('success',msg);
+                                    rbSheetRef.current.close()
+                                } catch (error) {
+                                    console.log('Invalid code.', error);
+                                }
+                            }}
+                        />
+                    </View>
+                </RBSheet>
 
-                    <RBSheet
-                        ref={rbSheetRef}
-                        closeOnDragDown={true}
-                        closeOnPressMask={true}
-                        height={160}
-                        customStyles={{
-                            wrapper: {
-                                //   backgroundColor: "transparent"
-                            },
-                            container: {
-                                borderTopLeftRadius: 20,
-                                borderTopRightRadius: 20,
-                                // alignItems: 'center',
-                                // justifyContent: 'center',
-                            },
-                            draggableIcon: {
-                                backgroundColor: theme.GREY
-                            }
-                        }}
-                    >
-                        <View style={{ paddingLeft: 15, paddingRight: 15 }}>
-                            <Text style={{ fontSize: 17, color: theme.textColor1, fontWeight: 'bold' }}>Pick Image from: </Text>
-                            <View style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 15, justifyContent: 'space-between' }}>
-                                <TouchableOpacity onPress={() => {
-                                    rbSheetRef.current.close()
-                                    pickImageFromGallery()
-                                }}>
-                                    <Image source={imgGallery} style={{ width: 44, height: 44, tintColor: theme.btnColor }} />
-                                    <Text style={{ marginTop: 5, color: theme.btnColor, fontWeight: '500' }}>Gallery</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={{ marginLeft: 80, }} onPress={() => {
-                                    rbSheetRef.current.close()
-                                    pickImageFromCamera()
-                                }}>
-                                    <Image source={imgCamera} style={{ width: 44, height: 44, tintColor: theme.btnColor }} />
-                                    <Text style={{ marginTop: 5, color: theme.btnColor, fontWeight: '500' }}>Camera</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </RBSheet>
-                </View>
                 <View style={{ alignItems: 'center', marginBottom: 30 }}>
                     <AnimatedLottieView
                         source={gifMobileAuth}
@@ -221,4 +235,17 @@ const MobileAuthentication = ({ navigation }) => {
 
 export default MobileAuthentication
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    cell: {
+        width: 40,
+        height: 40,
+        lineHeight: 38,
+        fontSize: 24,
+        borderWidth: 2,
+        borderColor: '#00000030',
+        textAlign: 'center',
+    },
+    focusCell: {
+        borderColor: '#000',
+    },
+})

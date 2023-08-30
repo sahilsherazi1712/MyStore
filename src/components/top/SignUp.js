@@ -14,8 +14,10 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import RiteLoader from '../../utils/helpers/RiteLoader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { USER_ID } from '../../utils/Keys';
 // import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell, } from 'react-native-confirmation-code-field';
+
+const CELL_COUNT = 6;
 
 const SignUp = ({ navigation }) => {
     const { theme } = useContext(ThemeContext);
@@ -33,11 +35,15 @@ const SignUp = ({ navigation }) => {
     const [currentLongitude, setCurrentLongitude] = useState(0);
     const [currentLatitude, setCurrentLatitude] = useState(0);
     const [locationStatus, setLocationStatus] = useState('');
-
+    const [value, setValue] = useState('');
+    const [confirm, setConfirm] = useState(null);
 
     const [filePath, setFilePath] = useState('');
 
     const rbSheetRef = useRef();
+    const otpRbSheetRef = useRef();
+    const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
+    const [props, getCellOnLayoutHandler] = useClearByFocusCell({ value, setValue, });
 
     useEffect(() => {
         requestLocationPermission();
@@ -230,11 +236,24 @@ const SignUp = ({ navigation }) => {
             });
     }
 
+    useEffect(() => {
+        const subscriber = auth()
+            .onAuthStateChanged((user) => {
+                if (user) {
+                    // Some Android devices can automatically process the verification code (OTP) message, and the user would NOT need to enter the code.
+                    // Actually, if he/she tries to enter it, he/she will get an error message because the code was already used in the background.
+                    // In this function, make sure you hide the component(s) for entering the code and/or navigate away from this screen.
+                    // It is also recommended to display a message to the user informing him/her that he/she has successfully logged in.
+                }
+            });
+        return subscriber; // unsubscribe on unmount
+    }, []);
+
     const validateInputs = () => {
         const mobileFormate = /^[0-9]{10}$/;
         let emailFormate = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         const trimedName = name.trim();
-        const trimedMobile = mobile.trim();
+        const trimedMobile = '+' + countryCode + mobile.trim();
         const trimedAddress = address.trim();
         const trimedEmail = email.trim();
         const trimedPassword = password.trim();
@@ -249,56 +268,87 @@ const SignUp = ({ navigation }) => {
                                     : trimedPassword.length < 6 ? console.log("Password must be at least 6 characters long!")
                                         : trimedCPassword === "" ? console.log("Please Enter Your Confirm Password!")
                                             : trimedCPassword !== trimedPassword ? console.log("Passwords do not match.")
-                                                : saveUser(filePath, trimedName, '+' + countryCode + trimedMobile, trimedAddress, trimedEmail, trimedPassword)
+                                                : verifyMobile(trimedMobile)
     }
 
-    const saveUser = async (image, name, mobile, address, email, password) => {
+    const verifyMobile = async (mobile) => {
         setLoaderVisible(true)
-        setLoaderMsg('Creating User ...')
-        console.log(image, name, mobile, address, email, password);
-        const id = Date.now();
-        console.log('timeStamp: ', id);
+        setLoaderMsg('Verifying Mobile ...')
+        console.log(mobile);
         try {
-            await AsyncStorage.setItem(USER_ID, id.toString());
-            auth()
-                .createUserWithEmailAndPassword(email, password)
-                .then((res) => {
-                    setLoaderMsg('Storing Your Information ...');
-                    console.log('User Created: ', JSON.stringify(res));
-                    firestore()
-                        .collection('users')
-                        .doc(`${id}`)
-                        .set({
-                            image: image,
-                            name: name,
-                            mobile: mobile,
-                            address: address,
-                            email: email,
-                            password: password,
-                        })
-                        .then(res => {
-                            setLoaderVisible(false)
-                            console.log('UserSaveRes', res);
-                            setFilePath('')
-                            setName('')
-                            setMobile('')
-                            setAddress('')
-                            setEmail('')
-                            setPassword('')
-                            setCPassword('')
-                            navigation.navigate('Login')
-                        })
-                        .catch(error => {
-                            setLoaderVisible(false)
-                            console.log('userSaveError:', error);
-                        });
-                })
-                .catch((error) => {
-                    setLoaderVisible(false)
-                    console.error('createUserError', error);
-                })
+            const confirmation = await auth().signInWithPhoneNumber(mobile);
+            setConfirm(confirmation);
+            console.log('bbb', confirmation);
+            if (confirmation !== "") {
+                otpRbSheetRef.current.open()
+                setLoaderVisible(false)
+            }
         } catch (error) {
-            console.log('ErrorStoringUserId: ', error);
+            setLoaderVisible(false)
+            console.log('signInWithPhoneNumberError', error);
+        }
+    }
+
+    const verifyOTP = async () => {
+        setLoaderMsg('Verifying OTP ...')
+        setLoaderVisible(true);
+        const trimedName = name.trim();
+        const trimedMobile = '+' + countryCode + mobile.trim();
+        const trimedAddress = address.trim();
+        const trimedEmail = email.trim();
+        const trimedPassword = password.trim();
+        try {
+            const msg = await confirm.confirm(value);
+            console.log('success', msg);
+            if (msg !== "") {
+                setLoaderMsg('Creating Account ...')
+                try {
+                    auth()
+                        .createUserWithEmailAndPassword(email, password)
+                        .then(async (res) => {
+                            setLoaderMsg('Storing Your Information ...');
+                            const uid = res.user.uid;
+                            console.log('User Created: ', res);
+                            firestore()
+                                .collection('users')
+                                .doc(uid)
+                                .set({
+                                    id: uid,
+                                    image: filePath,
+                                    name: trimedName,
+                                    mobile: trimedMobile,
+                                    address: trimedAddress,
+                                    email: trimedEmail,
+                                    password: trimedPassword,
+                                })
+                                .then(res => {
+                                    setLoaderVisible(false)
+                                    console.log('UserSaveRes', res);
+                                    setFilePath('')
+                                    setName('')
+                                    setMobile('')
+                                    setAddress('')
+                                    setEmail('')
+                                    setPassword('')
+                                    setCPassword('')
+                                    navigation.navigate('Login')
+                                })
+                                .catch(error => {
+                                    setLoaderVisible(false)
+                                    console.log('userSaveError:', error);
+                                });
+                        })
+                        .catch((error) => {
+                            setLoaderVisible(false)
+                            console.error('createUserError', error);
+                        })
+                } catch (error) {
+                    console.log('ErrorStoringUserId: ', error);
+                }
+            }
+            rbSheetRef.current.close()
+        } catch (error) {
+            console.log('Invalid code.', error);
         }
     }
 
@@ -531,6 +581,71 @@ const SignUp = ({ navigation }) => {
                 </View>
             </View>
             <RiteLoader setModalVisible={setLoaderVisible} modalVisible={loaderVisible} loaderMsg={loaderMsg} />
+            <RBSheet
+                ref={otpRbSheetRef}
+                closeOnDragDown={true}
+                closeOnPressMask={true}
+                height={310}
+                customStyles={{
+                    wrapper: {
+                        //   backgroundColor: "transparent"
+                    },
+                    container: {
+                        borderTopLeftRadius: 20,
+                        borderTopRightRadius: 20,
+                        // alignItems: 'center',
+                        // justifyContent: 'center',
+                    },
+                    draggableIcon: {
+                        backgroundColor: theme.GREY
+                    }
+                }}
+            >
+                <View style={{ paddingLeft: 25, paddingRight: 25, backgroundColor: theme.primaryColor, shadowColor: theme.textColor1, margin: 10, }}>
+                    <Text style={{ color: theme.textColor1, fontWeight: '500', marginBottom: 5, textAlign: 'center', fontSize: 18, marginTop: 15, }}>OTP</Text>
+                    <Text style={{ color: theme.textColor1, marginBottom: 5, textAlign: 'center', fontSize: 14, opacity: .7 }}>Provide the otp, you just received to complete your registration.</Text>
+                    <CodeField
+                        ref={ref}
+                        {...props}
+                        // Use `caretHidden={false}` when users can't paste a text value, because context menu doesn't appear
+                        value={value}
+                        // caretHidden={false}
+                        onChangeText={setValue}
+                        cellCount={CELL_COUNT}
+                        rootStyle={{ marginTop: 20 }}
+                        keyboardType="number-pad"
+                        textContentType="oneTimeCode"
+                        renderCell={({ index, symbol, isFocused }) => (
+                            <Text
+                                key={index}
+                                style={{
+                                    width: 40,
+                                    height: 40,
+                                    lineHeight: 38,
+                                    fontSize: 24,
+                                    borderWidth: 2,
+                                    borderColor: isFocused ? theme.btnColor : theme.GREY,
+                                    textAlign: 'center',
+                                }}
+                                onLayout={getCellOnLayoutHandler(index)}>
+                                {symbol || (isFocused ? <Cursor /> : null)}
+                            </Text>
+                        )}
+                    />
+                    <CustomButton
+                        title={'Continue'}
+                        style={{ marginTop: 30, }}
+                        onPress={() => {
+                            if(value !== ""){
+                                otpRbSheetRef.current.close()
+                                verifyOTP()
+                            }else{
+                                console.log('Please Enter otp.');
+                            }
+                        }}
+                    />
+                </View>
+            </RBSheet>
         </ScrollView>
     )
 }

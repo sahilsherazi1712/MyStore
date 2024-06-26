@@ -13,7 +13,7 @@ List of Fanctionalities:
 9) sign up the new user, login in and update profile
 10) 
 
-<img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/7d0b2506-2ef1-438d-a750-21d0e9f21413" data-canonical-src="[https://gyazo.com/eb5c5741b6a9a16c692170a41a49c858.png](https://github.com/sahilsherazi1712/MyStore/assets/111113315/7d0b2506-2ef1-438d-a750-21d0e9f21413)" width="200" height="400" />
+<img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/7d0b2506-2ef1-438d-a750-21d0e9f21413" width="200" height="400" />
 
 <img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/4042c14c-db33-4846-b9e8-ab2412baee04" data-canonical-src="[https://gyazo.com/eb5c5741b6a9a16c692170a41a49c858.png](https://github.com/sahilsherazi1712/MyStore/assets/111113315/4042c14c-db33-4846-b9e8-ab2412baee04)" width="200" height="400" />
 

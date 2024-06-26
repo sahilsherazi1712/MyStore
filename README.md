@@ -13,18 +13,18 @@ This is an E-commerce based App developed in React Native. This app contains all
 9. Sign up the new user, login in, and update profile
 
 <p align="center">
-  <img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/7d0b2506-2ef1-438d-a750-21d0e9f21413" width="200" height="400" />
-  <img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/4042c14c-db33-4846-b9e8-ab2412baee04" width="200" height="400" />
+  <img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/7d0b2506-2ef1-438d-a750-21d0e9f21413" width="200" height="400" style="margin-right: 10px;" />
+  <img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/4042c14c-db33-4846-b9e8-ab2412baee04" width="200" height="400" style="margin-left: 10px;" />
 </p>
 <p align="center">
-  <img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/8794b61d-21b3-418b-8531-3a2a949e2ee0" width="200" height="400" />
-  <img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/4d830f41-2e92-4154-8508-b9004d2cef11" width="200" height="400" />
+  <img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/8794b61d-21b3-418b-8531-3a2a949e2ee0" width="200" height="400" style="margin-right: 10px;" />
+  <img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/4d830f41-2e92-4154-8508-b9004d2cef11" width="200" height="400" style="margin-left: 10px;" />
 </p>
 <p align="center">
-  <img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/e48cc1b8-a6a7-4648-be4a-69cb00a404f4" width="200" height="400" />
-  <img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/6aab5c03-a19e-40f7-bdac-a38235f2cb9a" width="200" height="400" />
+  <img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/e48cc1b8-a6a7-4648-be4a-69cb00a404f4" width="200" height="400" style="margin-right: 10px;" />
+  <img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/6aab5c03-a19e-40f7-bdac-a38235f2cb9a" width="200" height="400" style="margin-left: 10px;" />
 </p>
 <p align="center">
-  <img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/4f452fde-0b7b-4867-936f-596ca0a18691" width="200" height="400" />
-  <img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/9ec3c664-bd48-4f40-aea9-4b39828f7add" width="200" height="400" />
+  <img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/4f452fde-0b7b-4867-936f-596ca0a18691" width="200" height="400" style="margin-right: 10px;" />
+  <img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/9ec3c664-bd48-4f40-aea9-4b39828f7add" width="200" height="400" style="margin-left: 10px;" />
 </p>

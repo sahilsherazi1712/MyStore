@@ -19,12 +19,12 @@ List of Fanctionalities:
 
 <img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/8794b61d-21b3-418b-8531-3a2a949e2ee0" width="200" height="400" />
 
-<img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/4d830f41-2e92-4154-8508-b9004d2cef11" data-canonical-src="[https://gyazo.com/eb5c5741b6a9a16c692170a41a49c858.png](https://github.com/sahilsherazi1712/MyStore/assets/111113315/4d830f41-2e92-4154-8508-b9004d2cef11)" width="200" height="400" />
+<img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/4d830f41-2e92-4154-8508-b9004d2cef11" width="200" height="400" />
 
-<img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/e48cc1b8-a6a7-4648-be4a-69cb00a404f4" data-canonical-src="[https://gyazo.com/eb5c5741b6a9a16c692170a41a49c858.png](https://github.com/sahilsherazi1712/MyStore/assets/111113315/e48cc1b8-a6a7-4648-be4a-69cb00a404f4)" width="200" height="400" />
+<img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/e48cc1b8-a6a7-4648-be4a-69cb00a404f4" width="200" height="400" />
 
-<img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/6aab5c03-a19e-40f7-bdac-a38235f2cb9a" data-canonical-src="[https://gyazo.com/eb5c5741b6a9a16c692170a41a49c858.png](https://github.com/sahilsherazi1712/MyStore/assets/111113315/6aab5c03-a19e-40f7-bdac-a38235f2cb9a)" width="200" height="400" />
+<img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/6aab5c03-a19e-40f7-bdac-a38235f2cb9a" width="200" height="400" />
 
-<img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/4f452fde-0b7b-4867-936f-596ca0a18691" data-canonical-src="[https://gyazo.com/eb5c5741b6a9a16c692170a41a49c858.png](https://github.com/sahilsherazi1712/MyStore/assets/111113315/4f452fde-0b7b-4867-936f-596ca0a18691)" width="200" height="400" />
+<img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/4f452fde-0b7b-4867-936f-596ca0a18691" width="200" height="400" />
 
-<img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/9ec3c664-bd48-4f40-aea9-4b39828f7add" data-canonical-src="[https://gyazo.com/eb5c5741b6a9a16c692170a41a49c858.png](https://github.com/sahilsherazi1712/MyStore/assets/111113315/9ec3c664-bd48-4f40-aea9-4b39828f7add)" width="200" height="400" />
+<img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/9ec3c664-bd48-4f40-aea9-4b39828f7add" width="200" height="400" />

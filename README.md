@@ -15,9 +15,9 @@ List of Fanctionalities:
 
 <img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/7d0b2506-2ef1-438d-a750-21d0e9f21413" width="200" height="400" />
 
-<img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/4042c14c-db33-4846-b9e8-ab2412baee04" data-canonical-src="[https://gyazo.com/eb5c5741b6a9a16c692170a41a49c858.png](https://github.com/sahilsherazi1712/MyStore/assets/111113315/4042c14c-db33-4846-b9e8-ab2412baee04)" width="200" height="400" />
+<img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/4042c14c-db33-4846-b9e8-ab2412baee04" width="200" height="400" />
 
-<img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/8794b61d-21b3-418b-8531-3a2a949e2ee0" data-canonical-src="[https://gyazo.com/eb5c5741b6a9a16c692170a41a49c858.png](https://github.com/sahilsherazi1712/MyStore/assets/111113315/8794b61d-21b3-418b-8531-3a2a949e2ee0)" width="200" height="400" />
+<img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/8794b61d-21b3-418b-8531-3a2a949e2ee0" width="200" height="400" />
 
 <img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/4d830f41-2e92-4154-8508-b9004d2cef11" data-canonical-src="[https://gyazo.com/eb5c5741b6a9a16c692170a41a49c858.png](https://github.com/sahilsherazi1712/MyStore/assets/111113315/4d830f41-2e92-4154-8508-b9004d2cef11)" width="200" height="400" />
 

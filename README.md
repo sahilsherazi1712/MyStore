@@ -14,6 +14,7 @@ List of Fanctionalities:
 10) 
 
 <img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/7d0b2506-2ef1-438d-a750-21d0e9f21413" data-canonical-src="[https://gyazo.com/eb5c5741b6a9a16c692170a41a49c858.png](https://github.com/sahilsherazi1712/MyStore/assets/111113315/7d0b2506-2ef1-438d-a750-21d0e9f21413)" width="200" height="400" />
+<img src="https://github.com/sahilsherazi1712/MyStore/assets/111113315/4042c14c-db33-4846-b9e8-ab2412baee04" data-canonical-src="[https://gyazo.com/eb5c5741b6a9a16c692170a41a49c858.png](https://github.com/sahilsherazi1712/MyStore/assets/111113315/4042c14c-db33-4846-b9e8-ab2412baee04)" width="200" height="400" />
 ![Screenshot_2023-08-30-19-04-10-84_e28c59466fe3462b17aca394277d108e](https://github.com/sahilsherazi1712/MyStore/assets/111113315/7d0b2506-2ef1-438d-a750-21d0e9f21413)
 ![Screenshot_2023-08-30-19-02-04-71_e28c59466fe3462b17aca394277d108e](https://github.com/sahilsherazi1712/MyStore/assets/111113315/4042c14c-db33-4846-b9e8-ab2412baee04)
 ![Screenshot_2023-08-30-19-01-43-60_e28c59466fe3462b17aca394277d108e](https://github.com/sahilsherazi1712/MyStore/assets/111113315/8794b61d-21b3-418b-8531-3a2a949e2ee0)
